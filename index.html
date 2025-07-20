@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ZD Media Caster</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 40px; }
+    video { width: 80%; max-width: 700px; margin-top: 20px; border-radius: 8px; border: 2px solid #555; }
+    button, input { padding: 10px; margin: 10px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>🎬 Cast a Video via AirPlay or Chromecast</h2>
+
+  <input type="text" id="mediaUrl" placeholder="Enter video URL (MP4, HLS, etc)" size="50" />
+  <br/>
+  <button onclick="loadVideo()">🔗 Load Video</button>
+  <button onclick="castAirPlay()">📡 AirPlay</button>
+  <button onclick="castChromecast()">🌐 Chromecast</button>
+
+  <br/>
+  <video id="videoPlayer" controls playsinline autoplay muted></video>
+
+  <script>
+    function loadVideo() {
+      const url = document.getElementById("mediaUrl").value.trim();
+      const video = document.getElementById("videoPlayer");
+      if (url) {
+        video.src = url;
+        video.load();
+        video.play();
+      } else {
+        alert("Please enter a valid video URL.");
+      }
+    }
+
+    function castAirPlay() {
+      const video = document.getElementById("videoPlayer");
+      if (window.WebKitPlaybackTargetAvailabilityEvent) {
+        video.addEventListener('webkitplaybacktargetavailabilitychanged', function(e) {
+          if (e.availability === "available") {
+            video.webkitShowPlaybackTargetPicker();
+          } else {
+            alert("No AirPlay devices found.");
+          }
+        });
+      } else {
+        alert("AirPlay not supported on this browser.");
+      }
+    }
+
+    function castChromecast() {
+      const video = document.getElementById("videoPlayer");
+      if (video.remote && video.remote.prompt) {
+        video.remote.prompt();
+      } else {
+        alert("Chromecast is not available or not supported here.");
+      }
+    }
+  </script>
+</body>
+</html>
